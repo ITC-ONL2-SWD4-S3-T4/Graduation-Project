@@ -44,7 +44,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.startActivity
 import com.example.jobsearchapplication.MainActivity
-import com.example.jobsearchapplication.SecondActivity
 import com.example.jobsearchapplication.ui.screens.job_search_screen.BottomNavigationItem
 import com.example.jobsearchapplication.ui.screens.job_search_screen.JobItem
 import com.example.jobsearchapplication.ui.screens.reminder_screen.preview.fakeReminderList

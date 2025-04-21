@@ -22,7 +22,5 @@ fun AppNavHost(modifier: Modifier = Modifier) {
 
         composable(route = Screens.JobSearchScreen.route){
             JobSearchScreen()
-
-
     }
 }}

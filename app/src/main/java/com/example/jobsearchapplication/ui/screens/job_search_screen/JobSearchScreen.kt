@@ -67,7 +67,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.jobsearchapplication.MainActivity
-import com.example.jobsearchapplication.SecondActivity
 import com.example.jobsearchapplication.ui.screens.job_search_screen.preview.fakeJobList
 import com.example.jobsearchapplication.ui.screens.job_search_screen.searchBar.MainAppBar
 import com.example.jobsearchapplication.ui.screens.job_search_screen.searchBar.SearchViewModel
@@ -164,9 +163,7 @@ fun JobSearchScreen(
                         NavigationBarItem(
                             selected = selectedItemIndex == index,
                             onClick = {
-                                selectedItemIndex = index
-                                val intent = Intent(context, SecondActivity::class.java)
-                                context.startActivity(intent)
+
                             },
                             label = {
                                 Text(
