@@ -14,35 +14,31 @@ import androidx.compose.ui.graphics.Color
 
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF117E7E),       // Primary Blue
-
+    primary = Color(0xFF117E7E),
     tertiary = Color(0xFF094F4F),
-
-    onPrimary = Color.White,           // White Text on Primary
-    secondary = Color(0xFFEC7121),     // Accent Green
-    background = Color(0xFFF5F5F5),    // Light Gray Background
-    surface = Color.White,             // White Cards
-    onSurface = Color(0xFF1C1B1F),     // Dark Text for Readability
-    onSecondary = Color.White,         // White Text on Secondary
-    error = Color(0xFFDC3545),         // Crimson Red for Warnings
-    onError = Color.White,             // White Text on Error
-    outline = Color(0xFFCCCCCC),       // Soft Gray Borders
+    onPrimary = Color.White,
+    secondary = Color(0xFFEC7121),
+    background = Color(0xFFF5F5F5),
+    surface = Color.White,
+    onSurface = Color(0xFF1C1B1F),
+    onSecondary = Color.White,
+    error = Color(0xFFDC3545),
+    onError = Color.White,
+    outline = Color(0xFFCCCCCC),
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF0E5757),       // Primary Blue
-
+    primary = Color(0xFF0E5757),
     tertiary = Color(0xFF093F3F),
-
-    onPrimary = Color.White,           // White Text on Primary
-    secondary = Color(0xFFAF511D),     // Accent Green
-    background = Color(0xFF121212),    // Deep Charcoal Black
-    surface = Color(0xFF1E1E1E),       // Graphite Gray Surface
-    onSurface = Color(0xFFEAEAEA),     // Soft White Text
-    onSecondary = Color.White,         // White Text on Secondary
-    error = Color(0xFFFF4C4C),         // Fiery Red for Warnings
-    onError = Color.White,             // White Text on Error
-    outline = Color(0xFF444444),       // Gunmetal Gray Borders
+    onPrimary = Color.White,
+    secondary = Color(0xFFAF511D),
+    background = Color(0xFF121212),
+    surface = Color(0xFF1E1E1E),
+    onSurface = Color(0xFFEAEAEA),
+    onSecondary = Color.White,
+    error = Color(0xFFFF4C4C),
+    onError = Color.White,
+    outline = Color(0xFF444444),
 )
 
 @Composable

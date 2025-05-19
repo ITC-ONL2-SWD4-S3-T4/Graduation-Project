@@ -22,11 +22,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.example.jobsearchapplication.ui.navigation.LogInManager
+import com.example.jobsearchapplication.ui.navigation.Screens
 import com.example.jobsearchapplication.ui.screens.job_search_screen.viewmodel.JobSearchViewModel
 import kotlinx.coroutines.launch
 
@@ -120,8 +124,14 @@ fun SearchAppBar(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DefaultAppBar(onSearchClicked: () -> Unit) {
+fun DefaultAppBar(
+    onSearchClicked: () -> Unit,
+    navController: NavController
+) {
 
+    var expanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val logInManager = remember { LogInManager(context) }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     TopAppBar(
         title = {
@@ -130,14 +140,6 @@ fun DefaultAppBar(onSearchClicked: () -> Unit) {
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onPrimary
             )
-
-//                        TextField(
-//                            value = searchQuery,
-//                            onValueChange = { viewModel.onSearchQueryChanged(it) },
-//                            modifier = Modifier.fillMaxWidth(),
-//                            placeholder = { Text("Search jobs...") },
-//                            singleLine = true
-//                        )
         },
 
         colors = TopAppBarDefaults.topAppBarColors(
@@ -157,12 +159,28 @@ fun DefaultAppBar(onSearchClicked: () -> Unit) {
 
 
             IconButton(
-                onClick = {}
+                onClick = {expanded = true}
             ) {
                 Icon(
                     imageVector = Icons.Default.MoreVert,
                     contentDescription = "",
                     tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Log Out") },
+                    onClick = {
+                        expanded = false
+                        logInManager.logOut()
+                        navController.navigate(Screens.LoginScreen.route) {
+                            popUpTo(0)
+                        }
+                    }
                 )
             }
         },
@@ -172,8 +190,10 @@ fun DefaultAppBar(onSearchClicked: () -> Unit) {
 
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainAppBar(
+    navController: NavController,
     searchWidgetState: SearchWidgetState,
     searchTextState: String,
     onTextChange: (String) -> Unit,
@@ -184,7 +204,8 @@ fun MainAppBar(
     when (searchWidgetState) {
         SearchWidgetState.CLOSED -> {
             DefaultAppBar(
-                onSearchClicked = onSearchTriggered
+                onSearchClicked = onSearchTriggered,
+                navController = navController
             )
         }
         SearchWidgetState.OPENED -> {

@@ -3,6 +3,7 @@ package com.example.jobsearchapplication.domain.model
 import com.example.jobsearchapplication.data.dataSources.remote.retrofit.datamodel.Category
 import com.example.jobsearchapplication.data.dataSources.remote.retrofit.datamodel.Company
 import com.example.jobsearchapplication.data.dataSources.remote.retrofit.datamodel.Location
+import com.example.jobsearchapplication.ui.common_components.JobStatus
 
 data class JobsDomainModel(
 
@@ -17,6 +18,7 @@ val created: String,
 val redirect_url: String,
 val company: String,
 val location: String,
-val category: String
+val category: String,
+var status: JobStatus
 
 )
