@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "366495098871",
+    "project_id": "depi-job-search",
+    "storage_bucket": "depi-job-search.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:366495098871:android:100e550fdab631f89970f2",
+        "android_client_info": {
+          "package_name": "com.example.jobsearchapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUU3wls2LJ1vAIHvRC_K0_tFxxDTZMIsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

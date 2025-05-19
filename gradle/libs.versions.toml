@@ -1,6 +1,6 @@
 [versions]
-agp = "8.3.2"
-kotlin = "1.9.0"
+agp = "8.4.2"
+kotlin = "2.1.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -13,19 +13,21 @@ navigationCompose = "2.7.7"
 mockk = "1.13.3"
 turbine = "0.7.0"
 espresso = "3.6.1"
-hiltAndroid = "2.50"
+hiltAndroid = "2.55"
 hiltNavigationCompose = "1.2.0"
 coroutinesAndroid = "1.8.0"
 lottieCompose = "6.0.0"
-ksp = "1.9.10-1.0.13"
+ksp = "2.1.0-1.0.29"
 retrofit = "2.9.0"
-gson = "2.10"
-room = "2.6.0"
+gson = "2.10.1"
+room = "2.7.1"
 okkhttp3 = "5.0.0-alpha.11"
 datastore = "1.1.1"
 coilCompose = "2.6.0"
 uiTestAndroid = "1.6.6"
 coreI18n = "1.0.0-beta01"
+
+kotlinxMetadataJvm = "0.9.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -66,6 +68,7 @@ datastore = { group = "androidx.datastore", name = "datastore-preferences", vers
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
 androidx-ui-test-android = { group = "androidx.compose.ui", name = "ui-test-android", version.ref = "uiTestAndroid" }
 androidx-core-i18n = { group = "androidx.core", name = "core-i18n", version.ref = "coreI18n" }
+kotlinx-metadata-jvm = { group = "org.jetbrains.kotlinx", name = "kotlinx-metadata-jvm", version.ref = "kotlinxMetadataJvm" }
 
 
 [plugins]
@@ -73,4 +76,4 @@ androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

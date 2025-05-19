@@ -43,6 +43,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -52,6 +53,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -66,62 +68,44 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.jobsearchapplication.MainActivity
-import com.example.jobsearchapplication.SecondActivity
+import com.example.jobsearchapplication.ui.common_components.BottomBar
 import com.example.jobsearchapplication.ui.screens.job_search_screen.preview.fakeJobList
 import com.example.jobsearchapplication.ui.screens.job_search_screen.searchBar.MainAppBar
 import com.example.jobsearchapplication.ui.screens.job_search_screen.searchBar.SearchViewModel
 import com.example.jobsearchapplication.ui.screens.job_search_screen.searchBar.SearchWidgetState
 import com.example.jobsearchapplication.ui.screens.job_search_screen.viewmodel.FilterOptions
 import com.example.jobsearchapplication.ui.screens.job_search_screen.viewmodel.JobSearchViewModel
+import com.example.jobsearchapplication.ui.screens.saved_jobs.viewmodel.SavedJobViewModel
+import com.example.jobsearchapplication.ui.theme.Grey
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JobSearchScreen(
-
+    onJobItemClicked: (jobItem: JobUiModel) -> Unit,
+    navController: NavController
 ) {
+
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     val jobSearchViewModel: JobSearchViewModel = hiltViewModel()
     val searchViewModel: SearchViewModel = hiltViewModel()
+
+
+    val savedJobViewModel: SavedJobViewModel = hiltViewModel()
     val jobList by jobSearchViewModel.jobList.collectAsStateWithLifecycle()
 
-    val searchQuery by jobSearchViewModel.searchQuery.collectAsStateWithLifecycle()
     val filterOptions by jobSearchViewModel.filterOptions.collectAsStateWithLifecycle()
 
-    var showFilterMenu by remember { mutableStateOf(true) }
 
     LaunchedEffect(key1 = true) {
         jobSearchViewModel.fetchJobs()
-    }
-
-    val navigationBarItems = listOf(
-        BottomNavigationItem(
-            title = "Home",
-            selectedIcon = Icons.Filled.Home,
-            unSelectedIcon = Icons.Outlined.Home
-        ),
-        BottomNavigationItem(
-            title = "Saved Jobs",
-            selectedIcon = Icons.Filled.Save,
-            unSelectedIcon = Icons.Outlined.Save
-        ),
-        BottomNavigationItem(
-            title = "Tracker",
-            selectedIcon = Icons.Filled.QueryStats,
-            unSelectedIcon = Icons.Outlined.QueryStats
-        ),
-        BottomNavigationItem(
-            title = "Reminder",
-            selectedIcon = Icons.Filled.Notifications,
-            unSelectedIcon = Icons.Outlined.Notifications
-        )
-    )
-
-    var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
     }
 
     val context = LocalContext.current
@@ -139,6 +123,7 @@ fun JobSearchScreen(
                 .nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 MainAppBar(
+                    navController = navController,
                     searchWidgetState = searchWidgetState,
                     searchTextState = searchTextState,
                     onTextChange = {
@@ -157,41 +142,10 @@ fun JobSearchScreen(
                 )
             },
             bottomBar = {
-                NavigationBar(
-                    containerColor = MaterialTheme.colorScheme.background
-                ) {
-                    navigationBarItems.forEachIndexed { index, bottomNavigationItem ->
-                        NavigationBarItem(
-                            selected = selectedItemIndex == index,
-                            onClick = {
-                                selectedItemIndex = index
-                                val intent = Intent(context, SecondActivity::class.java)
-                                context.startActivity(intent)
-                            },
-                            label = {
-                                Text(
-                                    bottomNavigationItem.title,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                            },
-                            icon = {
-                                BadgedBox(
-                                    badge = {
-
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = if (selectedItemIndex == index) {
-                                            bottomNavigationItem.selectedIcon
-                                        } else bottomNavigationItem.unSelectedIcon,
-                                        contentDescription = "",
-                                        tint = MaterialTheme.colorScheme.onSurface
-                                    )
-                                }
-                            }
-                        )
-                    }
-                }
+                BottomBar(
+                    currentRoute = currentRoute,
+                    navController = navController
+                )
 
             }
         ) { innerPadding ->
@@ -207,12 +161,20 @@ fun JobSearchScreen(
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-//                        .weight(1f)
-//                        .padding(innerPadding)
                 ) {
                     items(jobList) { jobItem ->
+
                         JobItem(
                             jobUiModel = jobItem,
+                            onJobItemClicked = {
+                                onJobItemClicked(it)
+                            },
+                            onSave = {
+                                savedJobViewModel.saveJob(jobItem)
+                            },
+                            onDelete = {savedJobViewModel.deleteJob(jobItem.id)},
+                            jobSearchJobItem = true,
+                            onTrackJob = {}
 
                         )
                     }
@@ -254,6 +216,14 @@ fun JobFilters(
             DropdownMenuItem(text = { Text("Contract") }, onClick = {
                 onFilterChanged(currentFilters.copy(contractType = "contract"))
                 expandedContractType = false })
+
+            DropdownMenuItem(
+                text = { Text("All Types") },
+                onClick = {
+                    onFilterChanged(currentFilters.copy(contractType = ""))
+                    expandedContractType = false
+                }
+            )
         }
 
         FilterButton("Date posted", expandedDate, { expandedDate = !expandedDate }) {
@@ -266,6 +236,14 @@ fun JobFilters(
             DropdownMenuItem(text = { Text("Last 30 days") }, onClick = {
                 onFilterChanged(currentFilters.copy(datePosted = "30d"))
                 expandedDate = false })
+
+            DropdownMenuItem(
+                text = { Text("Any time") },
+                onClick = {
+                    onFilterChanged(currentFilters.copy(datePosted = ""))
+                    expandedDate = false
+                }
+            )
         }
 
         FilterButton("Contract Time", expandedContractTime, { expandedContractTime = !expandedContractTime }) {
@@ -275,6 +253,14 @@ fun JobFilters(
             DropdownMenuItem(text = { Text("Part Time") }, onClick = {
                 onFilterChanged(currentFilters.copy(contractTime = "part_time"))
                 expandedContractTime = false })
+
+            DropdownMenuItem(
+                text = { Text("Any") },
+                onClick = {
+                    onFilterChanged(currentFilters.copy(contractTime = ""))
+                    expandedContractTime = false
+                }
+            )
         }
 
         FilterButton("Salary Range", expandedSalary, { expandedSalary = !expandedSalary }) {
@@ -300,23 +286,51 @@ fun JobFilters(
                             singleLine = true
                         )
 
-                        Button(
-                            onClick = {
-                                onFilterChanged(
-                                    currentFilters.copy(
-                                        minSalary = minSalary.toDoubleOrNull(),
-                                        maxSalary = maxSalary.toDoubleOrNull()
-                                    )
-                                )
-                                expandedSalary = false
-                            },
-                            modifier = Modifier.fillMaxWidth()
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text("Apply")
+                            Button(
+                                onClick = {
+                                    onFilterChanged(
+                                        currentFilters.copy(
+                                            minSalary = minSalary.toDoubleOrNull(),
+                                            maxSalary = maxSalary.toDoubleOrNull()
+                                        )
+                                    )
+                                    expandedSalary = false
+                                },
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text("Apply")
+                            }
+
+                            Button(
+                                onClick = {
+                                    onFilterChanged(
+                                        currentFilters.copy(
+                                            minSalary = null,
+                                            maxSalary = null
+                                        )
+                                    )
+                                    minSalary = ""
+                                    maxSalary = ""
+                                    expandedSalary = false
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                                ),
+                                shape = RoundedCornerShape(8.dp)
+                            ) {
+                                Text("Clear")
+                            }
                         }
+
+
                     }
                 },
-                onClick = { /* Prevent auto-closing */ }
+                onClick = {  }
             )
         }
     }
@@ -333,11 +347,18 @@ fun FilterButton(
     Column {
         Button(
             onClick = onClick,
-            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Grey,
+                contentColor = MaterialTheme.colorScheme.onSurfaceVariant)
+            ,
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
-                .height(40.dp)
-                .padding(4.dp)
+                .height(45.dp)
+                .padding(vertical = 4.dp),
+            elevation = ButtonDefaults.buttonElevation(
+                defaultElevation = 0.dp,
+                pressedElevation = 2.dp
+            )
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text, fontSize = 14.sp, color = Color.Black)
@@ -360,11 +381,3 @@ fun FilterButton(
  fun JobSearchScreenPreview() {
 //    JobSearchScreen()
 }
-
-
-data class BottomNavigationItem(
-    val title: String,
-    val selectedIcon: ImageVector,
-    val unSelectedIcon: ImageVector
-)
-

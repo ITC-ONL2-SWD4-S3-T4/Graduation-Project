@@ -1,6 +1,7 @@
 package com.example.jobsearchapplication.ui.mapper
 
 import com.example.jobsearchapplication.domain.model.JobsDomainModel
+import com.example.jobsearchapplication.ui.common_components.JobStatus
 import com.example.jobsearchapplication.ui.screens.job_search_screen.JobUiModel
 
 
@@ -18,7 +19,11 @@ fun List<JobsDomainModel>.toJobsUiModel(): List<JobUiModel> {
             created = item.created,
             category = item.category,
             description = item.description,
-            redirect_url = item.redirect_url
+            redirect_url = item.redirect_url,
+            status = JobStatus.NOT_APPLIED
         )
     }
 }
+
+
+fun JobsDomainModel.toUi(): JobUiModel = JobUiModel(id, title, location, company, salary_min, salary_max, contract_time, contract_type, created, category, description, redirect_url, status)

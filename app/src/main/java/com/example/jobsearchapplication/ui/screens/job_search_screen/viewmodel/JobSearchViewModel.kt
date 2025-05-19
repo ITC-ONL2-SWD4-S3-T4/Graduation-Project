@@ -132,30 +132,7 @@ private fun isWithinDays(dateStr: String, days: Int): Boolean {
 data class FilterOptions(
     val minSalary: Double? = null,
     val maxSalary: Double? = null,
-    val datePosted: String = "", // e.g., 7 means last 7 days
-    val contractType: String = "",     // e.g., "Permanent", "Contract"
+    val datePosted: String = "",
+    val contractType: String = "",
     val contractTime: String = ""
 )
-
-//_jobList.value = allJobs.filter { job ->
-//    (query.isEmpty() || job.title.lowercase().contains(query) || job.company.lowercase().contains(query)) &&
-//            (filters.location.isEmpty() || job.location.lowercase().contains(filters.location.lowercase())) &&
-//            (filters.company.isEmpty() || job.company.lowercase().contains(filters.company.lowercase())) &&
-//            (filters.minSalary == null || (job.salary ?: 0.0) >= filters.minSalary) &&
-//            (filters.maxSalary == null || (job.salary ?: 0.0) <= filters.maxSalary)
-//}
-
-
-//val matchesDate = filters.datePostedInDays?.let { days ->
-//    try {
-//        val formatter = java.time.format.DateTimeFormatter.ISO_DATE_TIME
-//        val jobPostedInstant = java.time.Instant.from(formatter.parse(job.created ?: ""))
-//        val jobPostedMillis = jobPostedInstant.toEpochMilli()
-//
-//        val currentTime = System.currentTimeMillis()
-//        val daysInMillis = days * 24 * 60 * 60 * 1000L
-//        jobPostedMillis >= (currentTime - daysInMillis)
-//    } catch (e: Exception) {
-//        true // If parsing fails, don't exclude the job
-//    }
-//} ?: true

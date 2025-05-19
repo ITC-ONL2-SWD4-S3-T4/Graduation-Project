@@ -3,6 +3,7 @@ package com.example.jobsearchapplication.data.mapper
 import com.example.jobsearchapplication.data.dataSources.remote.retrofit.datamodel.JobDataModel
 import com.example.jobsearchapplication.data.dataSources.remote.retrofit.datamodel.JobDataModelItem
 import com.example.jobsearchapplication.domain.model.JobsDomainModel
+import com.example.jobsearchapplication.ui.common_components.JobStatus
 
 fun JobDataModel.toJobDomainModel(): List<JobsDomainModel> {
     return this.results.map { item ->
@@ -18,7 +19,8 @@ fun JobDataModel.toJobDomainModel(): List<JobsDomainModel> {
              redirect_url =  item.redirect_url,
              company =  item.company.display_name,
              location =  item.location.display_name,
-             category = item.category.label
+             category = item.category.label,
+            status = JobStatus.NOT_APPLIED
         )
     }
 }
